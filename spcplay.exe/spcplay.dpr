@@ -1282,6 +1282,12 @@ const
     OBJID_SYSMENU = $FFFFFFFF;
 
     // WINDOW クラス
+    APPCOMMAND_MEDIA_NEXTTRACK = 11;
+    APPCOMMAND_MEDIA_PAUSE = 47;
+    APPCOMMAND_MEDIA_PLAY = 46;
+    APPCOMMAND_MEDIA_PLAY_PAUSE = 14;
+    APPCOMMAND_MEDIA_PREVIOUSTRACK = 12;
+    APPCOMMAND_MEDIA_STOP = 13;
     BM_CLICK = $F5;
     BM_GETCHECK = $F0;
     BM_GETIMAGE = $F6;
@@ -2144,6 +2150,7 @@ const
     WM_ACTIVATE = $6;
     WM_ACTIVATEAPP = $1C;
     WM_APP = $8000;                                         // ～ $BFFF
+    WM_APPCOMMAND = $319;
     WM_ASKCBFORMATNAME = $30C;
     WM_CANCELJOURNAL = $4B;
     WM_CANCELMODE = $1F;
@@ -13389,6 +13396,16 @@ begin
                         ID_STATIC_MAIN: ChangeStaticClick();
                     end;
                 end;
+            end;
+        end;
+        WM_APPCOMMAND: begin
+            case lParam shr 16 of // GET_APPCOMMAND_LPARAM(lParam)
+                APPCOMMAND_MEDIA_PAUSE: SPCPlay(PLAY_TYPE_PAUSE);
+                APPCOMMAND_MEDIA_PLAY: SPCPlay(PLAY_TYPE_PLAY);
+                APPCOMMAND_MEDIA_PLAY_PAUSE: SPCPlay(PLAY_TYPE_AUTO);
+                APPCOMMAND_MEDIA_NEXTTRACK: ListNextPlay(PLAY_ORDER_NEXT, LIST_NEXT_PLAY_SELECT);
+                APPCOMMAND_MEDIA_PREVIOUSTRACK: ListNextPlay(PLAY_ORDER_PREVIOUS, LIST_NEXT_PLAY_SELECT);
+                APPCOMMAND_MEDIA_STOP: SPCStop(false);
             end;
         end;
         WM_DROPFILES: dwDef := DropFile(wParam); // ファイルがドロップされた
